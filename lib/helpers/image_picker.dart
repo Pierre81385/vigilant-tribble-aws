@@ -7,7 +7,7 @@ import 'package:path/path.dart';
 class ImagePickerComponent extends StatefulWidget {
   ImagePickerComponent({super.key, required this.onSelect});
 
-  final ValueChanged<String?> onSelect;
+  final ValueChanged<String> onSelect;
 
   @override
   _ImagePickerComponentState createState() => _ImagePickerComponentState();
@@ -25,8 +25,9 @@ class _ImagePickerComponentState extends State<ImagePickerComponent> {
         _photo = File(pickedFile.path);
         final bytes = File(_photo!.path).readAsBytesSync();
         String base64Image = base64Encode(bytes);
+        String image = base64Image;
 
-        widget.onSelect(base64Image);
+        widget.onSelect(image);
         //uploadFile();
       } else {
         print('No image selected.');

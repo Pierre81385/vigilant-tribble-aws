@@ -36,6 +36,22 @@ class _RekognitionComponentState extends State<RekognitionComponent> {
     }
   }
 
+  Future<void> saveImageToS3(file) async {
+    Map<String, dynamic> image = {'image': file};
+    try {
+      final resp = await api.postS3("s3/image-upload", image);
+      print(resp);
+      setState(() {
+        _response = resp;
+      });
+    } on Exception catch (e) {
+      setState(() {
+        _error = true;
+        _errorMessage = e.toString();
+      });
+    }
+  }
+
   Future<void> getCelebrityAnalysis(file) async {
     Map<String, dynamic> image = {'image': file};
     try {
@@ -61,12 +77,20 @@ class _RekognitionComponentState extends State<RekognitionComponent> {
             children: [
               ImagePickerComponent(
                 onSelect: (value) {
-                  _image = value!;
+                  setState(() {
+                    _image = value;
+                  });
                 },
               ),
               OutlinedButton(
                   onPressed: () {
+                    saveImageToS3(_image);
+                  },
+                  child: Text("Save to S3")),
+              OutlinedButton(
+                  onPressed: () {
                     getFaceAnalysis(_image);
+                    saveImageToS3(_image);
                   },
                   child: Text("Facial Analysis")),
               OutlinedButton(

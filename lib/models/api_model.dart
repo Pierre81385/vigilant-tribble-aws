@@ -128,4 +128,23 @@ class ApiService {
       throw Exception('Failed to read data');
     }
   }
+
+  Future<Map<String, dynamic>> postS3(
+      String endpoint, Map<String, dynamic> data) async {
+    print('$baseUrl/$endpoint');
+    final response = await http.post(
+      Uri.parse('$baseUrl/$endpoint'),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(data),
+    );
+    print(response.reasonPhrase);
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to read data');
+    }
+  }
 }
